@@ -35,4 +35,40 @@ class ProdukController extends Controller
 
         return response()->json($produk);
     }
+
+    public function update(Request $request, $id)
+    {
+        $this->validate($request, [
+            'nama' => 'string',
+            'harga' => 'integer',
+            'warna' => 'string',
+            'kondisi' => 'in:baru,lama',
+            'deskripsi' => 'string',
+        ]);
+
+        $produk = Produk::find($id);
+
+        if(!$produk) {
+            return response()->json(['message' => 'Produk not found'], 404);
+        }
+
+        $data = $request->all();
+
+        $produk->fill($data);
+
+        $produk->save();
+        return response()->json($produk);
+    }
+
+    public function destroy($id)
+    {
+        $produk = Produk::find($id);
+
+        if(!$produk) {
+            return response()->json(['message' => 'Produk not found'], 404);
+        }
+
+        $produk->delete();
+        return response()->json(['message' => 'produk deleted']);
+    }
 }
